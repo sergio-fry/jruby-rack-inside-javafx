@@ -14,14 +14,14 @@ before_script:
 #  - bundle exec rake db:seed
 #  - bundle exec rake test
 
-war:
+web-service.war:
   # Cache gems in between builds
   cache:
     paths:
       - web/vendor/ruby
   artifacts:
     paths:
-      - web/$CI_PROJECT_NAME.war
+      - web/web-service.war
 
   script:
     - cd web
@@ -33,3 +33,4 @@ war:
     - gem install warbler -v "2.0.4"
 
     - warble
+    - mv web.war web-service.war
