@@ -9,6 +9,7 @@ cache:
     - vendor/ruby
 
 before_script:
+  - cd web
   - ruby -v                                   # Print out ruby version for debugging
   # Uncomment next line if your rails app needs a JS runtime:
   # - apt-get update -q && apt-get install nodejs -yqq
@@ -26,7 +27,7 @@ before_script:
 war:
   artifacts:
     paths:
-      - $CI_PROJECT_NAME.war
+      - web/$CI_PROJECT_NAME.war
   script:
     - gem install warbler -v "2.0.4"
     - warble
