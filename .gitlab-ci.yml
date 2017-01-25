@@ -2,16 +2,19 @@ image: "jruby:9.1-jdk"
 
 variables:
   POSTGRES_DB: database_name
+
 # Cache gems in between builds
 cache:
   paths:
     - vendor/ruby
+
 before_script:
   - ruby -v                                   # Print out ruby version for debugging
   # Uncomment next line if your rails app needs a JS runtime:
   # - apt-get update -q && apt-get install nodejs -yqq
   - gem install bundler  --no-ri --no-rdoc    # Bundler is not installed with the image
   - bundle install -j $(nproc) --path vendor  # Install dependencies into ./vendor/ruby
+
 #rails:
 #  variables:
 #    DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
@@ -19,7 +22,11 @@ before_script:
 #  - bundle exec rake db:migrate
 #  - bundle exec rake db:seed
 #  - bundle exec rake test
-build:
+
+war:
+  artifacts:
+    paths:
+      - $CI_PROJECT_NAME.war
   script:
     - gem install warbler -v "2.0.4"
     - warble
