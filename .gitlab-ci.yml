@@ -1,7 +1,11 @@
-image: "jruby:9.1-jdk"
 
 variables:
   POSTGRES_DB: database_name
+
+
+stages:
+  - build:web
+  - build:gui
 
 
 before_script:
@@ -14,7 +18,10 @@ before_script:
 #  - bundle exec rake db:seed
 #  - bundle exec rake test
 
+
 web-service.war:
+  stage: build:web
+  image: "jruby:9.1-jdk"
   # Cache gems in between builds
   cache:
     paths:
@@ -34,3 +41,16 @@ web-service.war:
 
     - warble
     - mv web.war web-service.war
+
+gui.jar:
+  stage: build:gui
+
+  image: "frekele/gradle:2.4-jdk8"
+  artifacts:
+    paths:
+      - gui/build/libs/gui.jar
+
+  script:
+    - cp web/web-service.war gui/
+    - cd gui
+    - gradle build
