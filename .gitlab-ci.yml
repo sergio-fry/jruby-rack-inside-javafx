@@ -3,18 +3,8 @@ image: "jruby:9.1-jdk"
 variables:
   POSTGRES_DB: database_name
 
-# Cache gems in between builds
-cache:
-  paths:
-    - vendor/ruby
 
 before_script:
-  - cd web
-  - ruby -v                                   # Print out ruby version for debugging
-  # Uncomment next line if your rails app needs a JS runtime:
-  # - apt-get update -q && apt-get install nodejs -yqq
-  - gem install bundler  --no-ri --no-rdoc    # Bundler is not installed with the image
-  - bundle install -j $(nproc) --path vendor  # Install dependencies into ./vendor/ruby
 
 #rails:
 #  variables:
@@ -25,9 +15,21 @@ before_script:
 #  - bundle exec rake test
 
 war:
+  # Cache gems in between builds
+  cache:
+    paths:
+      - web/vendor/ruby
   artifacts:
     paths:
       - web/$CI_PROJECT_NAME.war
+
   script:
+    - cd web
+    - ruby -v                                   # Print out ruby version for debugging
+    # Uncomment next line if your rails app needs a JS runtime:
+    # - apt-get update -q && apt-get install nodejs -yqq
+    - gem install bundler  --no-ri --no-rdoc    # Bundler is not installed with the image
+    - bundle install -j $(nproc) --path vendor  # Install dependencies into ./vendor/ruby
     - gem install warbler -v "2.0.4"
+
     - warble
